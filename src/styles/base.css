@@ -1,0 +1,108 @@
+/* ============================================================
+   Base / Reset — ported from hugo-book _defaults.scss + _main.scss
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size);
+  scroll-behavior: smooth;
+  touch-action: manipulation;
+  scrollbar-gutter: stable;
+}
+
+body {
+  min-width: 20rem;
+  margin: 0;
+  color: var(--body-font-color);
+  background: var(--body-background) var(--body-background-tint);
+  font-weight: var(--body-font-weight);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: default;
+}
+
+a[href],
+a[role="button"] {
+  color: var(--color-link);
+  cursor: pointer;
+}
+
+small {
+  font-size: 0.875em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+/* Hidden checkbox toggle (CSS-only collapsibles) */
+input.toggle {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+/* Nav lists */
+nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+nav ul li {
+  position: relative;
+}
+
+nav ul a {
+  padding: 0.5em 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  transition: opacity 0.1s ease-in-out;
+}
+
+nav ul a[href]:hover,
+nav ul a[role="button"]:hover {
+  opacity: 0.5;
+}
+
+nav ul ul {
+  padding-inline-start: 1.5em;
+}
+
+/* Pagination */
+ul.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+ul.pagination .page-item a {
+  padding: 1rem;
+}

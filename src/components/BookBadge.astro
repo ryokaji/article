@@ -1,0 +1,83 @@
+---
+/**
+ * BookBadge — Inline colour badge
+ * Mirrors hugo-book {{< badge >}} shortcode + .book-badge styles
+ *
+ * Usage:
+ *   <BookBadge type="warning" label="Status" value="Beta" />
+ */
+
+type BadgeType =
+  | "note"
+  | "tip"
+  | "important"
+  | "warning"
+  | "caution"
+  | "default"
+  | "info"
+  | "success"
+  | "danger";
+
+interface Props {
+  label: string;
+  value: string;
+  type?: BadgeType;
+}
+
+const { label, value, type = "default" } = Astro.props;
+---
+
+<span class={`book-badge ${type}`}>
+  <span>{label}</span><span class="book-badge-value">{value}</span>
+</span>
+
+<style>
+  .book-badge {
+    --accent-color: var(--color-accent-default);
+    display: inline-block;
+    font-size: var(--font-size-smaller);
+    font-weight: var(--body-font-weight);
+    vertical-align: middle;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--accent-color);
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--body-font-color);
+  }
+
+  .book-badge span {
+    display: inline-block;
+    padding: 0 0.5rem;
+  }
+
+  .book-badge-value {
+    color: var(--body-background);
+    background-color: var(--accent-color);
+  }
+
+  /* Variant accent colours */
+  .book-badge.note {
+    --accent-color: var(--color-accent-note);
+  }
+  .book-badge.tip {
+    --accent-color: var(--color-accent-tip);
+  }
+  .book-badge.important {
+    --accent-color: var(--color-accent-important);
+  }
+  .book-badge.warning {
+    --accent-color: var(--color-accent-warning);
+  }
+  .book-badge.caution {
+    --accent-color: var(--color-accent-caution);
+  }
+  .book-badge.info {
+    --accent-color: var(--color-accent-info);
+  }
+  .book-badge.success {
+    --accent-color: var(--color-accent-success);
+  }
+  .book-badge.danger {
+    --accent-color: var(--color-accent-danger);
+  }
+</style>

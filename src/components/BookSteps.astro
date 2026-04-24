@@ -1,0 +1,77 @@
+---
+/**
+ * BookSteps — Numbered step list with connecting line
+ * Mirrors hugo-book {{< steps >}} shortcode + .book-steps styles
+ *
+ * Usage:
+ *   <BookSteps>
+ *     <li>First step content</li>
+ *     <li>Second step content</li>
+ *   </BookSteps>
+ */
+---
+
+<div class="book-steps">
+  <ol>
+    <slot />
+  </ol>
+</div>
+
+<style>
+  .book-steps {
+    position: relative;
+  }
+
+  .book-steps ol {
+    counter-reset: steps;
+    list-style: none;
+    padding-inline-start: calc(1rem + 0.25rem);
+    margin-top: 2rem;
+  }
+
+  /* Step number circle */
+  .book-steps ol :global(> li)::before {
+    content: counter(steps);
+    counter-increment: steps;
+
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0.5rem;
+
+    height: 1.5rem;
+    width: 1.5rem;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+
+    white-space: nowrap;
+    line-height: 1rem;
+
+    color: var(--body-background);
+    background: var(--gray-500);
+    outline: 4px solid var(--body-background);
+    font-size: var(--font-size-smaller);
+  }
+
+  /* Connecting line */
+  .book-steps ol :global(> li) {
+    border-inline-start: 1px solid var(--gray-500);
+    padding-inline-start: 3rem;
+    padding-bottom: 2rem;
+    /* Remove top margin from first child inside li */
+  }
+
+  .book-steps ol :global(> li > :first-child) {
+    margin-top: 0;
+  }
+
+  .book-steps ol :global(> li > :last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Last step — remove the connecting line */
+  .book-steps ol :global(> li:last-child) {
+    border-inline-start: none;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+/**
+ * BookColumns — Multi-column flex layout
+ * Mirrors hugo-book {{< columns >}} shortcode + .book-columns styles
+ *
+ * Usage:
+ *   <BookColumns>
+ *     <div>Column 1</div>
+ *     <div>Column 2</div>
+ *   </BookColumns>
+ */
+interface Props {
+  /** Optional ratio e.g. "1 2" → first col flex:1, second col flex:2 */
+  ratio?: string;
+}
+
+const { ratio } = Astro.props;
+---
+
+<div class="book-columns" style={ratio ? `--col-ratio: ${ratio}` : undefined}>
+  <slot />
+</div>
+
+<style>
+  .book-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .book-columns :global(> *) {
+    flex: 1 1;
+    min-width: calc(20rem * 0.66); /* $body-min-width * 0.66 */
+    margin: 1rem 0;
+  }
+</style>

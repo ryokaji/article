@@ -1,0 +1,113 @@
+---
+/**
+ * BookToc — Right table of contents
+ * Mirrors hugo-book .book-toc + _partials/docs/toc.html
+ */
+import styles from "../layouts/layout.module.css";
+
+interface TocEntry {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface TocNode extends TocEntry {
+  children: TocNode[];
+}
+
+interface Props {
+  toc: TocEntry[];
+}
+
+const { toc } = Astro.props;
+
+function buildTree(entries: TocEntry[]): TocNode[] {
+  const roots: TocNode[] = [];
+  const stack: TocNode[] = [];
+
+  for (const entry of entries) {
+    const node: TocNode = { ...entry, children: [] };
+    while (stack.length > 0 && stack[stack.length - 1].depth >= entry.depth) {
+      stack.pop();
+    }
+    if (stack.length === 0) {
+      roots.push(node);
+    } else {
+      stack[stack.length - 1].children.push(node);
+    }
+    stack.push(node);
+  }
+  return roots;
+}
+
+function renderList(nodes: TocNode[]): string {
+  if (!nodes.length) return "";
+  const items = nodes
+    .map(
+      (n) =>
+        `<li><a href="#${n.slug}">${n.text}</a>${renderList(n.children)}</li>`,
+    )
+    .join("");
+  return `<ul>${items}</ul>`;
+}
+
+const tree = buildTree(toc);
+const tocHtml = renderList(tree);
+---
+
+<aside class={styles.bookToc}>
+  <div class={styles.bookTocContent}>
+    <nav set:html={tocHtml} />
+  </div>
+</aside>
+
+<script>
+  // Highlight active section as the user scrolls
+  const headings = document.querySelectorAll<HTMLElement>(
+    "article h2[id], article h3[id], article h4[id]",
+  );
+  const tocLinks = document.querySelectorAll<HTMLAnchorElement>("aside nav a");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          tocLinks.forEach((l) => l.classList.remove("active"));
+          const id = entry.target.getAttribute("id");
+          const active = document.querySelector<HTMLAnchorElement>(
+            `aside nav a[href="#${id}"]`,
+          );
+          if (active) active.classList.add("active");
+        }
+      }
+    },
+    { rootMargin: "0px 0px -60% 0px" },
+  );
+
+  headings.forEach((h) => observer.observe(h));
+</script>
+
+<style>
+  nav :global(ul) {
+    list-style: none;
+    padding-inline-start: 1rem;
+    margin: 0;
+  }
+
+  nav :global(> ul) {
+    padding-inline-start: 0;
+  }
+
+  nav :global(a) {
+    display: block;
+    padding: 0.125rem 0;
+    color: var(--body-font-color);
+    font-size: var(--font-size-smallest);
+    text-decoration: none;
+  }
+
+  nav :global(a:hover),
+  nav :global(a.active) {
+    color: var(--color-link);
+  }
+</style>

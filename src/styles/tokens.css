@@ -1,0 +1,62 @@
+/* ============================================================
+   Design Tokens — ported from hugo-book _defaults.scss
+   ============================================================ */
+
+:root {
+  /* Typography */
+  --font-size: 16px;
+  --font-size-smaller: 0.875rem;
+  --font-size-smallest: 0.75rem;
+  --body-font-weight: 400;
+
+  /* Shape */
+  --border-radius: 0.25rem;
+
+  /* Layout (as CSS vars for use in media queries via env() isn't possible,
+     these are informational — actual breakpoint is in layout CSS) */
+  --menu-width: 16rem;
+  --toc-width: 16rem;
+
+  /* Default light theme (browser-default look) */
+  --body-background: white;
+  --body-background-tint: transparent;
+  --body-font-color: black;
+
+  --color-link: #0055bb;
+  --color-visited-link: #5500bb;
+
+  --icon-filter: none;
+
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-500: #adb5bd;
+
+  /* Accent colours — 9 names × 2 variants (base + 10% tint) */
+  --color-accent-default:        #64748b;
+  --color-accent-default-tint:   rgb(100 116 139 / 0.1);
+
+  --color-accent-note:           #4486dd;
+  --color-accent-note-tint:      rgb(68 134 221 / 0.1);
+
+  --color-accent-tip:            #3bad3b;
+  --color-accent-tip-tint:       rgb(59 173 59 / 0.1);
+
+  --color-accent-important:      #8144dd;
+  --color-accent-important-tint: rgb(129 68 221 / 0.1);
+
+  --color-accent-warning:        #f59e42;
+  --color-accent-warning-tint:   rgb(245 158 66 / 0.1);
+
+  --color-accent-caution:        #d84747;
+  --color-accent-caution-tint:   rgb(216 71 71 / 0.1);
+
+  /* Aliases (legacy hint shortcode) */
+  --color-accent-info:           var(--color-accent-note);
+  --color-accent-info-tint:      var(--color-accent-note-tint);
+
+  --color-accent-success:        var(--color-accent-tip);
+  --color-accent-success-tint:   var(--color-accent-tip-tint);
+
+  --color-accent-danger:         var(--color-accent-caution);
+  --color-accent-danger-tint:    var(--color-accent-caution-tint);
+}

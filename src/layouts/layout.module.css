@@ -1,0 +1,224 @@
+/* ============================================================
+   DocsLayout — 3-column layout
+   Ported from hugo-book _main.scss
+   ============================================================ */
+
+/* Mobile breakpoint ≈ 56rem (menu 16 + body-min*1.2 24 + toc 16) */
+/* Used as a CSS custom property so components can reference it   */
+:root {
+  --mobile-breakpoint: 56rem;
+}
+
+.container {
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex.gap {
+  gap: 1rem;
+}
+
+/* ---- Left sidebar ---- */
+.bookMenu {
+  flex: 0 0 var(--menu-width);
+  font-size: var(--font-size-smaller);
+}
+
+.bookMenuContent {
+  width: var(--menu-width);
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.bookMenu a,
+.bookMenu label {
+  color: inherit;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.bookMenu a.active {
+  color: var(--color-link);
+}
+
+.bookMenu label > img:last-child {
+  height: 1em;
+  width: 1em;
+  cursor: pointer;
+  align-self: center;
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Collapsible tree */
+.bookMenu input.toggle + label + ul {
+  display: none;
+}
+
+.bookMenu input.toggle:checked + label > img:last-child {
+  transform: rotate(90deg);
+}
+
+.bookMenu input.toggle:checked + label + ul {
+  display: block;
+}
+
+/* Flat section header */
+.bookSectionFlat {
+  margin: 1rem 0;
+}
+
+.bookSectionFlat > a,
+.bookSectionFlat > span,
+.bookSectionFlat > label {
+  font-weight: bolder;
+}
+
+.bookSectionFlat > ul {
+  padding-inline-start: 0;
+}
+
+/* ---- Main content area ---- */
+.bookPage {
+  min-width: 20rem;
+  flex-grow: 1;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+/* ---- Right ToC ---- */
+.bookToc {
+  flex: 0 0 var(--toc-width);
+  font-size: var(--font-size-smallest);
+}
+
+.bookTocContent {
+  width: var(--toc-width);
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.bookTocContent a {
+  display: block;
+}
+
+/* ---- Mobile header (hidden on desktop) ---- */
+.bookHeader {
+  display: none;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bookHeader label {
+  line-height: 0;
+  cursor: pointer;
+}
+
+.bookHeader h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 1rem;
+  flex: 1;
+}
+
+/* ---- Footer ---- */
+.bookFooter {
+  padding-top: 1rem;
+  font-size: var(--font-size-smaller);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.bookFooter a {
+  margin: 0.25rem 0;
+  padding: 0.25rem 0;
+}
+
+/* ---- Menu overlay (mobile) ---- */
+.bookMenuOverlay {
+  display: none;
+}
+
+/* ---- Transitions ---- */
+.bookMenuContent,
+.bookTocContent {
+  transition: 0.2s ease-in-out;
+  transition-property: transform, margin, opacity, visibility;
+  will-change: transform, margin, opacity;
+}
+
+/* ============================================================
+   Responsive — below ~56rem (mobile)
+   ============================================================ */
+@media screen and (max-width: 56rem) {
+  .bookMenu {
+    visibility: hidden;
+    margin-inline-start: calc(-1 * var(--menu-width));
+    z-index: 1;
+  }
+
+  .bookMenuContent {
+    background: var(--body-background);
+  }
+
+  .bookToc {
+    display: none;
+  }
+
+  .bookHeader {
+    display: flex;
+  }
+}
+
+/* ---- Menu toggle (mobile) ---- */
+#menu-control:checked ~ main .bookMenu {
+  visibility: initial;
+}
+
+#menu-control:checked ~ main .bookMenuContent {
+  transform: translateX(var(--menu-width));
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+#menu-control:checked ~ main .bookPage {
+  opacity: 0.25;
+}
+
+#menu-control:checked ~ main .bookMenuOverlay {
+  display: block;
+  position: fixed;
+  inset: 0;
+}
+
+/* ---- ToC toggle (mobile) ---- */
+#toc-control:checked ~ main .bookHeader aside {
+  display: block;
+}
+
+/* ---- Extra padding on large screens ---- */
+@media screen and (min-width: 90rem) {
+  main {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .bookMenuContent,
+  .bookTocContent {
+    top: 1rem;
+  }
+}

@@ -1,0 +1,71 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import BookMenu from "../components/BookMenu.astro";
+import BookToc from "../components/BookToc.astro";
+import BookHeader from "../components/BookHeader.astro";
+import BookFooter from "../components/BookFooter.astro";
+import styles from "./layout.module.css";
+
+interface TocEntry {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  toc?: TocEntry[];
+  prevPage?: { href: string; title: string };
+  nextPage?: { href: string; title: string };
+  editUrl?: string;
+  lastModified?: Date;
+}
+
+const {
+  title,
+  description,
+  toc = [],
+  prevPage,
+  nextPage,
+  editUrl,
+  lastModified,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hidden checkboxes for CSS-only mobile menu / toc toggles -->
+  <input
+    type="checkbox"
+    class="toggle"
+    id="menu-control"
+    style="display:none"
+  />
+  <input type="checkbox" class="toggle" id="toc-control" style="display:none" />
+
+  <main class={`${styles.container} ${styles.flex}`}>
+    <!-- Left sidebar -->
+    <BookMenu />
+
+    <!-- Main content -->
+    <div class={styles.bookPage}>
+      <BookHeader title={title} hasToc={toc.length > 0} toc={toc} />
+
+      <article class="markdown">
+        <slot />
+      </article>
+
+      <BookFooter
+        prevPage={prevPage}
+        nextPage={nextPage}
+        editUrl={editUrl}
+        lastModified={lastModified}
+      />
+
+      <label for="menu-control" class={styles.bookMenuOverlay}></label>
+    </div>
+
+    <!-- Right ToC -->
+    {toc.length > 0 && <BookToc toc={toc} />}
+  </main>
+</BaseLayout>

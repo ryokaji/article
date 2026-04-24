@@ -1,0 +1,59 @@
+---
+/**
+ * DarkToggle — Manual light/dark mode toggle button
+ * Stores preference in localStorage and sets data-theme on <html>.
+ */
+---
+
+<button id="dark-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span id="dark-toggle-icon" aria-hidden="true"></span>
+</button>
+
+<script>
+  const btn = document.getElementById("dark-toggle") as HTMLButtonElement;
+  const icon = document.getElementById("dark-toggle-icon") as HTMLSpanElement;
+  const root = document.documentElement;
+
+  function getTheme(): string {
+    return root.getAttribute("data-theme") || "light";
+  }
+
+  function setTheme(theme: string) {
+    root.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    updateIcon(theme);
+  }
+
+  function updateIcon(theme: string) {
+    icon.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+
+  // Initialise icon on load
+  updateIcon(getTheme());
+
+  btn.addEventListener("click", () => {
+    const next = getTheme() === "dark" ? "light" : "dark";
+    setTheme(next);
+  });
+</script>
+
+<style>
+  button {
+    background: none;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    margin: 0.5rem 0;
+    color: var(--body-font-color);
+    font-size: var(--font-size-smaller);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+  }
+
+  button:hover {
+    border-color: var(--color-link);
+  }
+</style>

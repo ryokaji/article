@@ -1,0 +1,40 @@
+---
+/**
+ * BookButton — Outlined link button
+ * Mirrors hugo-book {{< button >}} shortcode + a.book-btn styles
+ */
+interface Props {
+  href: string;
+  label?: string;
+  target?: "_blank" | "_self" | "_parent" | "_top";
+  rel?: string;
+}
+
+const { href, label, target, rel } = Astro.props;
+const isExternal = target === "_blank";
+const relAttr = rel ?? (isExternal ? "noopener noreferrer" : undefined);
+---
+
+<a href={href} class="book-btn" target={target} rel={relAttr}>
+  {label ?? <slot />}
+</a>
+
+<style>
+  .book-btn {
+    display: inline-block;
+    font-size: var(--font-size-smaller);
+    color: var(--color-link);
+    line-height: 2rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-link);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.1s ease-in-out;
+  }
+
+  .book-btn:hover {
+    text-decoration: none;
+    background-color: var(--color-accent-note-tint);
+  }
+</style>

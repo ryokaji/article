@@ -1,0 +1,81 @@
+---
+/**
+ * BookHint — Alert/callout block
+ * Mirrors hugo-book {{< hint >}} shortcode + .book-hint styles
+ *
+ * Usage:
+ *   <BookHint type="warning">Content here</BookHint>
+ */
+
+type HintType =
+  | "note"
+  | "tip"
+  | "important"
+  | "warning"
+  | "caution"
+  | "default"
+  | "info"
+  | "success"
+  | "danger";
+
+interface Props {
+  type?: HintType;
+}
+
+const { type = "default" } = Astro.props;
+---
+
+<blockquote class={`book-hint ${type}`}>
+  <slot />
+</blockquote>
+
+<style>
+  .book-hint {
+    margin: 1rem 0;
+    padding: 0.5rem 1rem 0.5rem 0.75rem; /* 0.75 = 1rem - 0.25rem border */
+    border-inline-start: 0.25rem solid var(--color-accent-default);
+    border-radius: var(--border-radius);
+    background-color: var(--color-accent-default-tint);
+  }
+
+  .book-hint :global(> :first-child) {
+    margin-top: 0;
+  }
+  .book-hint :global(> :last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Variant colours */
+  .book-hint.note {
+    border-color: var(--color-accent-note);
+    background-color: var(--color-accent-note-tint);
+  }
+  .book-hint.tip {
+    border-color: var(--color-accent-tip);
+    background-color: var(--color-accent-tip-tint);
+  }
+  .book-hint.important {
+    border-color: var(--color-accent-important);
+    background-color: var(--color-accent-important-tint);
+  }
+  .book-hint.warning {
+    border-color: var(--color-accent-warning);
+    background-color: var(--color-accent-warning-tint);
+  }
+  .book-hint.caution {
+    border-color: var(--color-accent-caution);
+    background-color: var(--color-accent-caution-tint);
+  }
+  .book-hint.info {
+    border-color: var(--color-accent-info);
+    background-color: var(--color-accent-info-tint);
+  }
+  .book-hint.success {
+    border-color: var(--color-accent-success);
+    background-color: var(--color-accent-success-tint);
+  }
+  .book-hint.danger {
+    border-color: var(--color-accent-danger);
+    background-color: var(--color-accent-danger-tint);
+  }
+</style>

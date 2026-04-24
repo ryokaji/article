@@ -1,0 +1,138 @@
+---
+/**
+ * BookFooter — prev/next navigation + last modified + edit link
+ * Mirrors hugo-book .book-footer + _partials/docs/footer.html
+ */
+import styles from "../layouts/layout.module.css";
+
+interface PageLink {
+  href: string;
+  title: string;
+}
+
+interface Props {
+  prevPage?: PageLink;
+  nextPage?: PageLink;
+  editUrl?: string;
+  lastModified?: Date;
+}
+
+const { prevPage, nextPage, editUrl, lastModified } = Astro.props;
+
+const formattedDate = lastModified
+  ? new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium" }).format(
+      lastModified,
+    )
+  : null;
+---
+
+<footer class={styles.bookFooter}>
+  <div class="book-footer-nav">
+    {
+      prevPage && (
+        <a href={prevPage.href} class="book-footer-prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          {prevPage.title}
+        </a>
+      )
+    }
+  </div>
+
+  <div class="book-footer-meta">
+    {
+      editUrl && (
+        <a href={editUrl} target="_blank" rel="noopener noreferrer">
+          このページを編集する
+        </a>
+      )
+    }
+    {
+      formattedDate && (
+        <span class="book-footer-date">最終更新: {formattedDate}</span>
+      )
+    }
+  </div>
+
+  <div class="book-footer-nav">
+    {
+      nextPage && (
+        <a href={nextPage.href} class="book-footer-next">
+          {nextPage.title}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </a>
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding-top: 1rem;
+    font-size: var(--font-size-smaller);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    border-top: 1px solid var(--gray-200);
+    margin-top: 2rem;
+  }
+
+  .book-footer-nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .book-footer-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: var(--font-size-smallest);
+    color: var(--gray-500);
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.25rem 0;
+    padding: 0.25rem 0;
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+</style>

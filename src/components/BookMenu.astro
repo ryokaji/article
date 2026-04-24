@@ -1,0 +1,91 @@
+---
+/**
+ * BookMenu — Left sidebar navigation
+ * Mirrors hugo-book baseof.html .book-menu + _main.scss styles
+ *
+ * In a real project, pass `navItems` via props or fetch from Content Collections.
+ * Here we expose a slot so callers can inject any nav structure.
+ */
+import DarkToggle from "./DarkToggle.astro";
+import styles from "../layouts/layout.module.css";
+
+interface NavItem {
+  href: string;
+  title: string;
+  children?: NavItem[];
+  weight?: number;
+}
+
+interface Props {
+  brand?: string;
+  brandHref?: string;
+  navItems?: NavItem[];
+}
+
+const { brand = "Hugo Book", brandHref = "/", navItems = [] } = Astro.props;
+
+let menuId = 0;
+function nextId() { return `toggle-${++menuId}`; }
+---
+
+<aside class={styles.bookMenu}>
+  <div class={styles.bookMenuContent}>
+    <nav>
+      <!-- Brand / logo -->
+      <div class="book-brand">
+        <a href={brandHref}><strong>{brand}</strong></a>
+      </div>
+
+      <!-- Dark mode toggle -->
+      <DarkToggle />
+
+      <!-- Navigation tree -->
+      {navItems.length > 0 ? (
+        <ul>
+          {navItems.map((item) => (
+            <li>
+              {item.children && item.children.length > 0 ? (
+                <>
+                  <input type="checkbox" class="toggle" id={nextId()} />
+                  <label for={`toggle-${menuId}`}>
+                    <a href={item.href}>{item.title}</a>
+                    <img src="/icons/chevron.svg" class="book-icon" alt="" aria-hidden="true" />
+                  </label>
+                  <ul>
+                    {item.children.map((child) => (
+                      <li>
+                        <a href={child.href}>{child.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <a href={item.href}>{item.title}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <!-- Slot for custom nav content -->
+        <slot />
+      )}
+    </nav>
+  </div>
+</aside>
+
+<style>
+  .book-brand {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .book-brand a {
+    font-size: 1.125rem;
+  }
+
+  .book-icon {
+    filter: var(--icon-filter);
+    height: 1em;
+    width: 1em;
+  }
+</style>

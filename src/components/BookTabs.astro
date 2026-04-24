@@ -1,0 +1,207 @@
+---
+/**
+ * BookTabs — CSS-only tabbed content (up to 8 tabs)
+ * Mirrors hugo-book {{< tabs >}} shortcode.
+ *
+ * Because Astro requires static slot names, we support slots
+ * named "tab-0" through "tab-7". Unused slots are hidden.
+ *
+ * Usage:
+ *   <BookTabs tabs={["Linux", "macOS", "Windows"]}>
+ *     <div slot="tab-0">Linux content</div>
+ *     <div slot="tab-1">macOS content</div>
+ *     <div slot="tab-2">Windows content</div>
+ *   </BookTabs>
+ */
+
+interface Props {
+  tabs: string[];
+  name?: string;
+}
+
+const { tabs, name } = Astro.props;
+const groupName = name ?? `tabs-${Math.random().toString(36).slice(2, 7)}`;
+
+// Determine which slots actually have content (up to 8 tabs)
+const MAX_TABS = 8;
+const activeCount = Math.min(tabs.length, MAX_TABS);
+---
+
+<div class="book-tabs">
+  {
+    activeCount > 0 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-0`}
+          name={groupName}
+          class="toggle"
+          checked
+        />
+        <label for={`${groupName}-0`}>{tabs[0]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-0" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 1 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-1`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-1`}>{tabs[1]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-1" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 2 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-2`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-2`}>{tabs[2]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-2" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 3 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-3`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-3`}>{tabs[3]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-3" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 4 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-4`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-4`}>{tabs[4]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-4" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 5 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-5`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-5`}>{tabs[5]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-5" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 6 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-6`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-6`}>{tabs[6]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-6" />
+        </div>
+      </>
+    )
+  }
+  {
+    activeCount > 7 && (
+      <>
+        <input
+          type="radio"
+          id={`${groupName}-7`}
+          name={groupName}
+          class="toggle"
+        />
+        <label for={`${groupName}-7`}>{tabs[7]}</label>
+        <div class="book-tabs-content">
+          <slot name="tab-7" />
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .book-tabs {
+    margin: 1rem 0;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .book-tabs input[type="radio"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .book-tabs label {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
+    color: var(--body-font-color);
+    user-select: none;
+  }
+
+  .book-tabs label:hover {
+    color: var(--color-link);
+  }
+
+  .book-tabs-content {
+    order: 999;
+    width: 100%;
+    border-top: 1px solid var(--gray-100);
+    padding: 1rem;
+    display: none;
+  }
+
+  .book-tabs input[type="radio"]:checked + label {
+    border-bottom: 1px solid var(--color-link);
+    color: var(--color-link);
+  }
+
+  .book-tabs input[type="radio"]:checked + label + .book-tabs-content {
+    display: block;
+  }
+</style>

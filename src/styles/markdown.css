@@ -1,0 +1,442 @@
+/* ============================================================
+   Markdown content styles
+   Ported from hugo-book _markdown.scss + _shortcodes.scss
+   Apply via <article class="markdown"> wrapper
+   ============================================================ */
+
+.markdown {
+  line-height: 1.6;
+}
+
+/* Remove top margin on first element */
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+/* Headings */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-weight: inherit;
+  line-height: 1;
+  margin-top: 1.5em;
+  margin-bottom: 1rem;
+}
+
+.markdown h1 { font-size: 2rem; }
+.markdown h2 { font-size: 1.5rem; }
+.markdown h3 { font-size: 1.25rem; }
+.markdown h4 { font-size: 1.125rem; }
+.markdown h5 { font-size: 1rem; }
+.markdown h6 { font-size: 0.875rem; }
+
+/* Heading anchor links (hidden until hover) */
+.markdown h1 a.anchor,
+.markdown h2 a.anchor,
+.markdown h3 a.anchor,
+.markdown h4 a.anchor,
+.markdown h5 a.anchor,
+.markdown h6 a.anchor {
+  opacity: 0;
+  font-size: 0.75em;
+  margin-inline-start: 0.25em;
+  text-decoration: none;
+}
+
+.markdown h1:hover a.anchor,
+.markdown h2:hover a.anchor,
+.markdown h3:hover a.anchor,
+.markdown h4:hover a.anchor,
+.markdown h5:hover a.anchor,
+.markdown h6:hover a.anchor,
+.markdown a.anchor:focus-visible {
+  opacity: initial;
+}
+
+/* Strong */
+.markdown b,
+.markdown strong {
+  font-weight: bolder;
+}
+
+/* Links */
+.markdown a {
+  text-decoration: none;
+}
+
+.markdown a[href]:hover {
+  text-decoration: underline;
+}
+
+.markdown a[href]:visited {
+  color: var(--color-visited-link);
+}
+
+/* Images */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Inline code */
+.markdown code {
+  direction: ltr;
+  unicode-bidi: embed;
+  padding: 0.125em 0.25em;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+  font-size: 0.875em;
+}
+
+/* Code blocks */
+.markdown pre {
+  padding: 1rem;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+}
+
+.markdown pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+}
+
+/* Paragraphs */
+.markdown p {
+  word-wrap: break-word;
+}
+
+/* Blockquote */
+.markdown blockquote {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border-inline-start: 0.25rem solid var(--gray-200);
+  border-radius: var(--border-radius);
+}
+
+.markdown blockquote > :first-child { margin-top: 0; }
+.markdown blockquote > :last-child  { margin-bottom: 0; }
+
+/* GFM Alerts (> [!NOTE], > [!WARNING] etc.) */
+.markdown blockquote:has(> p > strong:first-child) {
+  /* Will be overridden by specific alert styles below if matched */
+}
+
+/* Tables */
+.markdown table {
+  overflow: auto;
+  display: block;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown table tr th,
+.markdown table tr td {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-200);
+  text-align: start;
+}
+
+.markdown table tr:nth-child(2n) {
+  background: var(--gray-100);
+}
+
+/* Horizontal rule */
+.markdown hr {
+  height: 1px;
+  border: none;
+  background: var(--gray-200);
+}
+
+/* Lists */
+.markdown ul,
+.markdown ol {
+  padding-inline-start: 2rem;
+  word-wrap: break-word;
+}
+
+/* Definition lists */
+.markdown dl dt {
+  font-weight: bolder;
+  margin-top: 1rem;
+}
+
+.markdown dl dd {
+  margin-inline-start: 0;
+  margin-bottom: 1rem;
+}
+
+/* Syntax highlighted code blocks */
+.markdown .highlight {
+  direction: ltr;
+  unicode-bidi: embed;
+  border-radius: var(--border-radius);
+}
+
+.markdown .highlight table tbody {
+  border: 1px solid var(--gray-200);
+}
+
+.markdown .highlight table tr pre {
+  border: 0;
+}
+
+.markdown .highlight table tr td:nth-child(1) pre {
+  margin: 0;
+  padding-inline-end: 0;
+}
+
+.markdown .highlight table tr td:nth-child(2) pre {
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+/* Native <details> inside markdown */
+.markdown details {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+}
+
+.markdown details summary {
+  line-height: 1;
+  padding: 1rem;
+  margin: -1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.markdown details summary::-webkit-details-marker { display: none; }
+
+.markdown details summary::before {
+  content: "›";
+  display: inline-block;
+  margin-inline-end: 0.5rem;
+  transition: transform 0.1s ease-in-out;
+}
+
+.markdown details[open] summary {
+  margin-bottom: 0;
+}
+
+.markdown details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* Figure */
+.markdown figure {
+  margin: 1rem 0;
+}
+
+/* ============================================================
+   Shortcode component styles — scoped inside .markdown
+   ============================================================ */
+
+/* --- .book-tabs --- */
+.markdown .book-tabs {
+  margin: 1rem 0;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.markdown .book-tabs label {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+
+.markdown .book-tabs .book-tabs-content {
+  order: 999;
+  width: 100%;
+  border-top: 1px solid var(--gray-100);
+  padding: 1rem;
+  display: none;
+}
+
+.markdown .book-tabs input[type="radio"]:checked + label {
+  border-bottom: 1px solid var(--color-link);
+  color: var(--color-link);
+}
+
+.markdown .book-tabs input[type="radio"]:checked + label + .book-tabs-content {
+  display: block;
+}
+
+/* --- .book-columns --- */
+.markdown .book-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.markdown .book-columns > * {
+  flex: 1 1;
+  min-width: calc(20rem * 0.66);
+  margin: 1rem 0;
+}
+
+/* --- .book-btn --- */
+.markdown a.book-btn[href] {
+  display: inline-block;
+  font-size: var(--font-size-smaller);
+  color: var(--color-link);
+  line-height: 2rem;
+  padding: 0 1rem;
+  border: 1px solid var(--color-link);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.markdown a.book-btn[href]:hover {
+  text-decoration: none;
+}
+
+/* --- .book-hint --- */
+.markdown .book-hint {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border-inline-start: 0.25rem solid var(--color-accent-default);
+  border-radius: var(--border-radius);
+  background-color: var(--color-accent-default-tint);
+}
+
+.markdown .book-hint > :first-child { margin-top: 0; }
+.markdown .book-hint > :last-child  { margin-bottom: 0; }
+
+.markdown .book-hint.note      { border-color: var(--color-accent-note);      background-color: var(--color-accent-note-tint); }
+.markdown .book-hint.tip       { border-color: var(--color-accent-tip);       background-color: var(--color-accent-tip-tint); }
+.markdown .book-hint.important { border-color: var(--color-accent-important); background-color: var(--color-accent-important-tint); }
+.markdown .book-hint.warning   { border-color: var(--color-accent-warning);   background-color: var(--color-accent-warning-tint); }
+.markdown .book-hint.caution   { border-color: var(--color-accent-caution);   background-color: var(--color-accent-caution-tint); }
+.markdown .book-hint.info      { border-color: var(--color-accent-info);      background-color: var(--color-accent-info-tint); }
+.markdown .book-hint.success   { border-color: var(--color-accent-success);   background-color: var(--color-accent-success-tint); }
+.markdown .book-hint.danger    { border-color: var(--color-accent-danger);    background-color: var(--color-accent-danger-tint); }
+
+/* --- .book-badge --- */
+.markdown .book-badge {
+  --accent-color: var(--color-accent-default);
+  display: inline-block;
+  font-size: var(--font-size-smaller);
+  font-weight: var(--body-font-weight);
+  vertical-align: middle;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--accent-color);
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--body-font-color);
+}
+
+.markdown .book-badge span {
+  display: inline-block;
+  padding: 0 0.5rem;
+}
+
+.markdown .book-badge .book-badge-value {
+  color: var(--body-background);
+  background-color: var(--accent-color);
+}
+
+.markdown .book-badge.note      { --accent-color: var(--color-accent-note); }
+.markdown .book-badge.tip       { --accent-color: var(--color-accent-tip); }
+.markdown .book-badge.important { --accent-color: var(--color-accent-important); }
+.markdown .book-badge.warning   { --accent-color: var(--color-accent-warning); }
+.markdown .book-badge.caution   { --accent-color: var(--color-accent-caution); }
+.markdown .book-badge.info      { --accent-color: var(--color-accent-info); }
+.markdown .book-badge.success   { --accent-color: var(--color-accent-success); }
+.markdown .book-badge.danger    { --accent-color: var(--color-accent-danger); }
+
+/* --- .book-steps --- */
+.markdown .book-steps {
+  position: relative;
+}
+
+.markdown .book-steps ol {
+  counter-reset: steps;
+  list-style: none;
+  padding-inline-start: calc(1rem + 0.25rem);
+  margin-top: 2rem;
+}
+
+.markdown .book-steps ol > li::before {
+  content: counter(steps);
+  counter-increment: steps;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0.5rem;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  line-height: 1rem;
+  color: var(--body-background);
+  background: var(--gray-500);
+  outline: 4px solid var(--body-background);
+  font-size: var(--font-size-smaller);
+}
+
+.markdown .book-steps ol > li {
+  border-inline-start: 1px solid var(--gray-500);
+  padding-inline-start: 3rem;
+  padding-bottom: 2rem;
+}
+
+.markdown .book-steps ol > li > :first-child { margin-top: 0; }
+.markdown .book-steps ol > li > :last-child  { margin-bottom: 0; }
+
+.markdown .book-steps ol > li:last-child {
+  border-inline-start: none;
+}
+
+/* --- .book-card --- */
+.markdown .book-card {
+  display: block;
+  overflow: hidden;
+  height: 100%;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-200);
+}
+
+.markdown .book-card > a {
+  display: block;
+  height: 100%;
+  color: var(--body-font-color);
+  text-decoration: none;
+}
+
+.markdown .book-card > a:hover {
+  background: var(--gray-100);
+  text-decoration: none;
+}
+
+.markdown .book-card > a > img,
+.markdown .book-card > img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.markdown .book-card .markdown-inner {
+  padding: 1rem;
+}
+
+/* --- Utility: markdown-inner --- */
+.markdown-inner > :first-child { margin-top: 0; }
+.markdown-inner > :last-child  { margin-bottom: 0; }

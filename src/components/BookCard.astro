@@ -1,0 +1,75 @@
+---
+/**
+ * BookCard — Content card with optional image
+ * Mirrors hugo-book {{< card >}} shortcode + .book-card styles
+ *
+ * Usage:
+ *   <BookCard href="/docs/intro" title="Introduction" description="Get started" image="/img/cover.png" />
+ */
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+const { href, title, description, image, imageAlt = "" } = Astro.props;
+---
+
+<div class="book-card">
+  <a href={href}>
+    {image && <img src={image} alt={imageAlt} loading="lazy" />}
+    <div class="markdown-inner">
+      <strong>{title}</strong>
+      {description && <p>{description}</p>}
+      <slot />
+    </div>
+  </a>
+</div>
+
+<style>
+  .book-card {
+    display: block;
+    overflow: hidden;
+    height: 100%;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+  }
+
+  .book-card > a {
+    display: block;
+    height: 100%;
+    color: var(--body-font-color);
+    text-decoration: none;
+  }
+
+  .book-card > a:hover {
+    background: var(--gray-100);
+    text-decoration: none;
+  }
+
+  .book-card > a > img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .markdown-inner {
+    padding: 1rem;
+  }
+
+  .markdown-inner :global(> :first-child) {
+    margin-top: 0;
+  }
+  .markdown-inner :global(> :last-child) {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    font-size: var(--font-size-smaller);
+    color: var(--gray-500);
+  }
+</style>

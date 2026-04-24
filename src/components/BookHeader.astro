@@ -1,0 +1,118 @@
+---
+/**
+ * BookHeader — Mobile-only header with hamburger toggles
+ * Mirrors hugo-book .book-header (shown only below ~56rem)
+ */
+import styles from "../layouts/layout.module.css";
+
+interface TocEntry {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title?: string;
+  hasToc?: boolean;
+  toc?: TocEntry[];
+}
+
+const { title, hasToc = false, toc = [] } = Astro.props;
+---
+
+<header class={styles.bookHeader}>
+  <!-- Menu toggle -->
+  <label for="menu-control" aria-label="Toggle menu">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="book-icon"
+      aria-hidden="true"
+    >
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </label>
+
+  {title && <h3>{title}</h3>}
+
+  <!-- ToC toggle (only when page has ToC) -->
+  <label for="toc-control" aria-label="Toggle table of contents">
+    {
+      hasToc && (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="book-icon"
+          aria-hidden="true"
+        >
+          <line x1="3" y1="6" x2="15" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="18" y2="18" />
+        </svg>
+      )
+    }
+  </label>
+</header>
+
+<!-- Mobile ToC (shown when #toc-control is checked) -->
+{
+  hasToc && toc.length > 0 && (
+    <aside class="hidden" id="mobile-toc">
+      <nav>
+        <ul>
+          {toc.map((entry) => (
+            <li style={`padding-inline-start: ${(entry.depth - 2) * 1}rem`}>
+              <a href={`#${entry.slug}`}>{entry.text}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  )
+}
+
+<style>
+  .book-icon {
+    filter: var(--icon-filter);
+    display: block;
+  }
+
+  #mobile-toc {
+    display: none;
+    margin-top: 0.5rem;
+    font-size: var(--font-size-smallest);
+  }
+
+  #mobile-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #mobile-toc a {
+    display: block;
+    padding: 0.25rem 0;
+    color: var(--body-font-color);
+    text-decoration: none;
+  }
+
+  #mobile-toc a[href]:hover {
+    color: var(--color-link);
+  }
+</style>

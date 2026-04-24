@@ -1,0 +1,78 @@
+---
+/**
+ * BookDetails — Collapsible details/summary block
+ * Mirrors hugo-book {{< details >}} shortcode
+ * Wraps native HTML <details> with hugo-book styles.
+ *
+ * Usage:
+ *   <BookDetails summary="Click to expand">
+ *     Hidden content here
+ *   </BookDetails>
+ */
+interface Props {
+  summary: string;
+  open?: boolean;
+}
+
+const { summary, open = false } = Astro.props;
+---
+
+<details class="book-details" open={open}>
+  <summary>{summary}</summary>
+  <div class="book-details-content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .book-details {
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+  }
+
+  .book-details > summary {
+    line-height: 1;
+    padding: 1rem;
+    margin: -1rem;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Hide default browser triangle */
+  .book-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .book-details > summary::before {
+    content: "›";
+    display: inline-block;
+    margin-inline-end: 0.5rem;
+    transition: transform 0.1s ease-in-out;
+    font-size: 1.25em;
+    line-height: 1;
+  }
+
+  .book-details[open] > summary {
+    margin-bottom: 0;
+  }
+
+  .book-details[open] > summary::before {
+    transform: rotate(90deg);
+  }
+
+  .book-details-content {
+    margin-top: 1rem;
+  }
+
+  .book-details-content :global(> :first-child) {
+    margin-top: 0;
+  }
+  .book-details-content :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

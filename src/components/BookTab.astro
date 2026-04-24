@@ -1,0 +1,22 @@
+---
+/**
+ * BookTab — Single tab panel, used inside BookTabs.
+ *
+ * Usage:
+ *   <BookTabs>
+ *     <BookTab label="Tab 1">Content 1</BookTab>
+ *     <BookTab label="Tab 2">Content 2</BookTab>
+ *   </BookTabs>
+ */
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<!-- BookTab renders nothing on its own; BookTabs reads label from slot metadata.
+     The actual rendering happens in BookTabs.astro via Astro.slots. -->
+<span data-tab-label={label} style="display:contents">
+  <slot />
+</span>
