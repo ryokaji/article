@@ -16,6 +16,11 @@ interface Props {
   title?: string;
   description?: string;
   toc?: TocEntry[];
+  frontmatter?: {
+    title?: string;
+    description?: string;
+    toc?: TocEntry[];
+  };
   prevPage?: { href: string; title: string };
   nextPage?: { href: string; title: string };
   editUrl?: string;
@@ -23,14 +28,19 @@ interface Props {
 }
 
 const {
-  title,
-  description,
-  toc = [],
+  title: rawTitle,
+  description: rawDescription,
+  toc: rawToc,
+  frontmatter,
   prevPage,
   nextPage,
   editUrl,
   lastModified,
 } = Astro.props;
+
+const title = rawTitle ?? frontmatter?.title;
+const description = rawDescription ?? frontmatter?.description;
+const toc = rawToc ?? frontmatter?.toc ?? [];
 ---
 
 <BaseLayout title={title} description={description}>
