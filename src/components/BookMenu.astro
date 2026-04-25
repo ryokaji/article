@@ -70,7 +70,9 @@ for (const entry of docs) {
 
       section = {
         title: sectionDoc?.data.title || segment.replace(/[-_]/g, " "),
-        href: sectionDoc?.data.bookHref || (sectionDoc ? `/docs/${sectionDoc.id}` : undefined),
+        href:
+          sectionDoc?.data.bookHref ||
+          (sectionDoc ? `/docs/${sectionDoc.id}` : undefined),
         isExternal: Boolean(sectionDoc?.data.bookHref),
         children: [],
         weight: sectionDoc?.data.weight,
@@ -86,7 +88,10 @@ for (const entry of docs) {
   }
 
   // Treat */index and */_index as section pages, not regular child links.
-  if ((lastSegment === "index" || lastSegment === "_index") && segments.length > 1) {
+  if (
+    (lastSegment === "index" || lastSegment === "_index") &&
+    segments.length > 1
+  ) {
     const sectionPath = segments.slice(0, -1).join("/");
     const section = sectionByPath.get(sectionPath);
     if (section) {
@@ -94,7 +99,8 @@ for (const entry of docs) {
       section.href = entry.data.bookHref || `/docs/${entry.id}`;
       section.isExternal = Boolean(entry.data.bookHref);
       section.weight = entry.data.weight ?? section.weight;
-      section.isFlatSection = entry.data.bookFlatSection ?? section.isFlatSection;
+      section.isFlatSection =
+        entry.data.bookFlatSection ?? section.isFlatSection;
     }
     continue;
   }
@@ -126,7 +132,9 @@ function sortTree(items: NavItem[]) {
     if (item.children && item.children.length > 0) {
       sortTree(item.children);
       const sectionPath = (item.href || "").replace(/\/$/, "");
-      item.expanded = currentPath === sectionPath || currentPath.startsWith(`${sectionPath}/`);
+      item.expanded =
+        currentPath === sectionPath ||
+        currentPath.startsWith(`${sectionPath}/`);
     }
   }
 }
@@ -134,7 +142,9 @@ function sortTree(items: NavItem[]) {
 sortTree(rootItems);
 
 let menuId = 0;
-function nextId() { return `toggle-${++menuId}`; }
+function nextId() {
+  return `toggle-${++menuId}`;
+}
 ---
 
 <aside class={styles.bookMenu}>
@@ -149,20 +159,22 @@ function nextId() { return `toggle-${++menuId}`; }
       <DarkToggle />
 
       <!-- Navigation tree -->
-      {rootItems.length > 0 ? (
-        <ul>
-          {rootItems.map((item) => (
-            <BookMenuItem
-              item={{ ...item, toggleId: item.toggleId || nextId() }}
-              currentPath={currentPath}
-              nextId={nextId}
-            />
-          ))}
-        </ul>
-      ) : (
-        // Slot for custom nav content
-        <slot />
-      )}
+      {
+        rootItems.length > 0 ? (
+          <ul>
+            {rootItems.map((item) => (
+              <BookMenuItem
+                item={{ ...item, toggleId: item.toggleId || nextId() }}
+                currentPath={currentPath}
+                nextId={nextId}
+              />
+            ))}
+          </ul>
+        ) : (
+          // Slot for custom nav content
+          <slot />
+        )
+      }
     </nav>
   </div>
 </aside>

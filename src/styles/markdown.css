@@ -26,12 +26,24 @@
   margin-bottom: 1rem;
 }
 
-.markdown h1 { font-size: 2rem; }
-.markdown h2 { font-size: 1.5rem; }
-.markdown h3 { font-size: 1.25rem; }
-.markdown h4 { font-size: 1.125rem; }
-.markdown h5 { font-size: 1rem; }
-.markdown h6 { font-size: 0.875rem; }
+.markdown h1 {
+  font-size: 2rem;
+}
+.markdown h2 {
+  font-size: 1.5rem;
+}
+.markdown h3 {
+  font-size: 1.25rem;
+}
+.markdown h4 {
+  font-size: 1.125rem;
+}
+.markdown h5 {
+  font-size: 1rem;
+}
+.markdown h6 {
+  font-size: 0.875rem;
+}
 
 /* Heading anchor links (hidden until hover) */
 .markdown h1 a.anchor,
@@ -121,8 +133,12 @@
   border-radius: var(--border-radius);
 }
 
-.markdown blockquote > :first-child { margin-top: 0; }
-.markdown blockquote > :last-child  { margin-bottom: 0; }
+.markdown blockquote > :first-child {
+  margin-top: 0;
+}
+.markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
 
 /* GFM Alerts (> [!NOTE], > [!WARNING] etc.) */
 .markdown blockquote:has(> p > strong:first-child) {
@@ -216,7 +232,9 @@
   list-style: none;
 }
 
-.markdown details summary::-webkit-details-marker { display: none; }
+.markdown details summary::-webkit-details-marker {
+  display: none;
+}
 
 .markdown details summary::before {
   content: "›";
@@ -314,17 +332,45 @@
   background-color: var(--color-accent-default-tint);
 }
 
-.markdown .book-hint > :first-child { margin-top: 0; }
-.markdown .book-hint > :last-child  { margin-bottom: 0; }
+.markdown .book-hint > :first-child {
+  margin-top: 0;
+}
+.markdown .book-hint > :last-child {
+  margin-bottom: 0;
+}
 
-.markdown .book-hint.note      { border-color: var(--color-accent-note);      background-color: var(--color-accent-note-tint); }
-.markdown .book-hint.tip       { border-color: var(--color-accent-tip);       background-color: var(--color-accent-tip-tint); }
-.markdown .book-hint.important { border-color: var(--color-accent-important); background-color: var(--color-accent-important-tint); }
-.markdown .book-hint.warning   { border-color: var(--color-accent-warning);   background-color: var(--color-accent-warning-tint); }
-.markdown .book-hint.caution   { border-color: var(--color-accent-caution);   background-color: var(--color-accent-caution-tint); }
-.markdown .book-hint.info      { border-color: var(--color-accent-info);      background-color: var(--color-accent-info-tint); }
-.markdown .book-hint.success   { border-color: var(--color-accent-success);   background-color: var(--color-accent-success-tint); }
-.markdown .book-hint.danger    { border-color: var(--color-accent-danger);    background-color: var(--color-accent-danger-tint); }
+.markdown .book-hint.note {
+  border-color: var(--color-accent-note);
+  background-color: var(--color-accent-note-tint);
+}
+.markdown .book-hint.tip {
+  border-color: var(--color-accent-tip);
+  background-color: var(--color-accent-tip-tint);
+}
+.markdown .book-hint.important {
+  border-color: var(--color-accent-important);
+  background-color: var(--color-accent-important-tint);
+}
+.markdown .book-hint.warning {
+  border-color: var(--color-accent-warning);
+  background-color: var(--color-accent-warning-tint);
+}
+.markdown .book-hint.caution {
+  border-color: var(--color-accent-caution);
+  background-color: var(--color-accent-caution-tint);
+}
+.markdown .book-hint.info {
+  border-color: var(--color-accent-info);
+  background-color: var(--color-accent-info-tint);
+}
+.markdown .book-hint.success {
+  border-color: var(--color-accent-success);
+  background-color: var(--color-accent-success-tint);
+}
+.markdown .book-hint.danger {
+  border-color: var(--color-accent-danger);
+  background-color: var(--color-accent-danger-tint);
+}
 
 /* --- .book-badge --- */
 .markdown .book-badge {
@@ -350,14 +396,30 @@
   background-color: var(--accent-color);
 }
 
-.markdown .book-badge.note      { --accent-color: var(--color-accent-note); }
-.markdown .book-badge.tip       { --accent-color: var(--color-accent-tip); }
-.markdown .book-badge.important { --accent-color: var(--color-accent-important); }
-.markdown .book-badge.warning   { --accent-color: var(--color-accent-warning); }
-.markdown .book-badge.caution   { --accent-color: var(--color-accent-caution); }
-.markdown .book-badge.info      { --accent-color: var(--color-accent-info); }
-.markdown .book-badge.success   { --accent-color: var(--color-accent-success); }
-.markdown .book-badge.danger    { --accent-color: var(--color-accent-danger); }
+.markdown .book-badge.note {
+  --accent-color: var(--color-accent-note);
+}
+.markdown .book-badge.tip {
+  --accent-color: var(--color-accent-tip);
+}
+.markdown .book-badge.important {
+  --accent-color: var(--color-accent-important);
+}
+.markdown .book-badge.warning {
+  --accent-color: var(--color-accent-warning);
+}
+.markdown .book-badge.caution {
+  --accent-color: var(--color-accent-caution);
+}
+.markdown .book-badge.info {
+  --accent-color: var(--color-accent-info);
+}
+.markdown .book-badge.success {
+  --accent-color: var(--color-accent-success);
+}
+.markdown .book-badge.danger {
+  --accent-color: var(--color-accent-danger);
+}
 
 /* --- .book-steps --- */
 .markdown .book-steps {
@@ -397,8 +459,12 @@
   padding-bottom: 2rem;
 }
 
-.markdown .book-steps ol > li > :first-child { margin-top: 0; }
-.markdown .book-steps ol > li > :last-child  { margin-bottom: 0; }
+.markdown .book-steps ol > li > :first-child {
+  margin-top: 0;
+}
+.markdown .book-steps ol > li > :last-child {
+  margin-bottom: 0;
+}
 
 .markdown .book-steps ol > li:last-child {
   border-inline-start: none;
@@ -438,5 +504,9 @@
 }
 
 /* --- Utility: markdown-inner --- */
-.markdown-inner > :first-child { margin-top: 0; }
-.markdown-inner > :last-child  { margin-bottom: 0; }
+.markdown-inner > :first-child {
+  margin-top: 0;
+}
+.markdown-inner > :last-child {
+  margin-bottom: 0;
+}

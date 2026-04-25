@@ -23,43 +23,50 @@ function isActive(href?: string) {
 ---
 
 <li class={item.isFlatSection ? styles.bookSectionFlat : undefined}>
-  {hasChildren ? (
-    <>
-      <input type="checkbox" class="toggle" id={toggleId} checked={item.expanded} />
-      <label for={toggleId}>
-        {item.href ? (
-          <a
-            href={item.href}
-            class={isActive(item.href) ? "active" : undefined}
-            target={item.isExternal ? "_blank" : undefined}
-            rel={item.isExternal ? "noopener" : undefined}
-          >
-            {item.title}
-          </a>
-        ) : (
-          <span>{item.title}</span>
-        )}
-      </label>
-      <ul>
-        {item.children?.map((child) => (
-          <Astro.self
-            item={{ ...child, toggleId: child.toggleId || nextId() }}
-            currentPath={currentPath}
-            nextId={nextId}
-          />
-        ))}
-      </ul>
-    </>
-  ) : item.href ? (
-    <a
-      href={item.href}
-      class={isActive(item.href) ? "active" : undefined}
-      target={item.isExternal ? "_blank" : undefined}
-      rel={item.isExternal ? "noopener" : undefined}
-    >
-      {item.title}
-    </a>
-  ) : (
-    <span>{item.title}</span>
-  )}
+  {
+    hasChildren ? (
+      <>
+        <input
+          type="checkbox"
+          class="toggle"
+          id={toggleId}
+          checked={item.expanded}
+        />
+        <label for={toggleId}>
+          {item.href ? (
+            <a
+              href={item.href}
+              class={isActive(item.href) ? "active" : undefined}
+              target={item.isExternal ? "_blank" : undefined}
+              rel={item.isExternal ? "noopener" : undefined}
+            >
+              {item.title}
+            </a>
+          ) : (
+            <span>{item.title}</span>
+          )}
+        </label>
+        <ul>
+          {item.children?.map((child) => (
+            <Astro.self
+              item={{ ...child, toggleId: child.toggleId || nextId() }}
+              currentPath={currentPath}
+              nextId={nextId}
+            />
+          ))}
+        </ul>
+      </>
+    ) : item.href ? (
+      <a
+        href={item.href}
+        class={isActive(item.href) ? "active" : undefined}
+        target={item.isExternal ? "_blank" : undefined}
+        rel={item.isExternal ? "noopener" : undefined}
+      >
+        {item.title}
+      </a>
+    ) : (
+      <span>{item.title}</span>
+    )
+  }
 </li>
