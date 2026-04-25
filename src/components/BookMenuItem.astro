@@ -1,0 +1,65 @@
+---
+import styles from "../layouts/layout.module.css";
+import type { NavItem } from "./BookMenu.astro";
+
+interface Props {
+  item: NavItem;
+  currentPath: string;
+  nextId: () => string;
+}
+
+const { item, currentPath, nextId } = Astro.props;
+const hasChildren = (item.children?.length ?? 0) > 0;
+const toggleId = item.toggleId || nextId();
+
+function normalizePath(path: string) {
+  return path.replace(/\/$/, "") || "/";
+}
+
+function isActive(href?: string) {
+  if (!href) return false;
+  return normalizePath(href) === currentPath;
+}
+---
+
+<li class={item.isFlatSection ? styles.bookSectionFlat : undefined}>
+  {hasChildren ? (
+    <>
+      <input type="checkbox" class="toggle" id={toggleId} checked={item.expanded} />
+      <label for={toggleId}>
+        {item.href ? (
+          <a
+            href={item.href}
+            class={isActive(item.href) ? "active" : undefined}
+            target={item.isExternal ? "_blank" : undefined}
+            rel={item.isExternal ? "noopener" : undefined}
+          >
+            {item.title}
+          </a>
+        ) : (
+          <span>{item.title}</span>
+        )}
+      </label>
+      <ul>
+        {item.children?.map((child) => (
+          <Astro.self
+            item={{ ...child, toggleId: child.toggleId || nextId() }}
+            currentPath={currentPath}
+            nextId={nextId}
+          />
+        ))}
+      </ul>
+    </>
+  ) : item.href ? (
+    <a
+      href={item.href}
+      class={isActive(item.href) ? "active" : undefined}
+      target={item.isExternal ? "_blank" : undefined}
+      rel={item.isExternal ? "noopener" : undefined}
+    >
+      {item.title}
+    </a>
+  ) : (
+    <span>{item.title}</span>
+  )}
+</li>

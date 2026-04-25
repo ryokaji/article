@@ -2,27 +2,136 @@
 /**
  * BookMenu — Left sidebar navigation
  * Mirrors hugo-book baseof.html .book-menu + _main.scss styles
- *
- * In a real project, pass `navItems` via props or fetch from Content Collections.
- * Here we expose a slot so callers can inject any nav structure.
  */
+import { getCollection } from "astro:content";
 import DarkToggle from "./DarkToggle.astro";
+import BookMenuItem from "./BookMenuItem.astro";
 import styles from "../layouts/layout.module.css";
 
-interface NavItem {
-  href: string;
+export interface NavItem {
   title: string;
+  href?: string;
+  isExternal?: boolean;
   children?: NavItem[];
   weight?: number;
+  isFlatSection?: boolean;
+  toggleId?: string;
+  expanded?: boolean;
 }
 
 interface Props {
   brand?: string;
   brandHref?: string;
-  navItems?: NavItem[];
 }
 
-const { brand = "Hugo Book", brandHref = "/", navItems = [] } = Astro.props;
+const { brand = "Hugo Book", brandHref = "/" } = Astro.props;
+
+const docs = (await getCollection("docs"))
+  .filter((entry) => entry.data.bookHidden !== true)
+  .sort((a, b) => {
+    const byWeight = (a.data.weight ?? 0) - (b.data.weight ?? 0);
+    if (byWeight !== 0) return byWeight;
+    return a.data.title.localeCompare(b.data.title);
+  });
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const docsById = new Map(docs.map((entry) => [entry.id, entry]));
+const sectionRootIds = new Set<string>();
+
+for (const entry of docs) {
+  const segments = entry.id.split("/").filter(Boolean);
+  for (let i = 1; i < segments.length; i++) {
+    sectionRootIds.add(segments.slice(0, i).join("/"));
+  }
+}
+
+const sectionByPath = new Map<string, NavItem>();
+const rootItems: NavItem[] = [];
+
+for (const entry of docs) {
+  const segments = entry.id.split("/").filter(Boolean);
+  if (segments.length === 0) continue;
+  const lastSegment = segments[segments.length - 1];
+  const entryPath = segments.join("/");
+
+  let siblings = rootItems;
+  let pathSoFar = "";
+
+  for (let i = 0; i < segments.length - 1; i++) {
+    const segment = segments[i];
+    pathSoFar = pathSoFar ? `${pathSoFar}/${segment}` : segment;
+
+    let section = sectionByPath.get(pathSoFar);
+    if (!section) {
+      const sectionDoc =
+        docsById.get(pathSoFar) ||
+        docsById.get(`${pathSoFar}/index`) ||
+        docsById.get(`${pathSoFar}/_index`);
+
+      section = {
+        title: sectionDoc?.data.title || segment.replace(/[-_]/g, " "),
+        href: sectionDoc?.data.bookHref || (sectionDoc ? `/docs/${sectionDoc.id}` : undefined),
+        isExternal: Boolean(sectionDoc?.data.bookHref),
+        children: [],
+        weight: sectionDoc?.data.weight,
+        isFlatSection: sectionDoc?.data.bookFlatSection ?? false,
+        toggleId: `section-${pathSoFar.replace(/[^a-zA-Z0-9_-]/g, "-")}`,
+      };
+      sectionByPath.set(pathSoFar, section);
+      siblings.push(section);
+    }
+
+    if (!section.children) section.children = [];
+    siblings = section.children;
+  }
+
+  // Treat */index and */_index as section pages, not regular child links.
+  if ((lastSegment === "index" || lastSegment === "_index") && segments.length > 1) {
+    const sectionPath = segments.slice(0, -1).join("/");
+    const section = sectionByPath.get(sectionPath);
+    if (section) {
+      section.title = entry.data.title;
+      section.href = entry.data.bookHref || `/docs/${entry.id}`;
+      section.isExternal = Boolean(entry.data.bookHref);
+      section.weight = entry.data.weight ?? section.weight;
+      section.isFlatSection = entry.data.bookFlatSection ?? section.isFlatSection;
+    }
+    continue;
+  }
+
+  // If this entry is a section root (e.g. guides/index -> id: guides),
+  // keep it as section metadata and avoid adding a duplicate leaf item.
+  if (sectionRootIds.has(entryPath)) {
+    continue;
+  }
+
+  const href = entry.data.bookHref || `/docs/${entry.id}`;
+  siblings.push({
+    title: entry.data.title,
+    href,
+    isExternal: Boolean(entry.data.bookHref),
+    weight: entry.data.weight ?? 0,
+    isFlatSection: entry.data.bookFlatSection ?? false,
+  });
+}
+
+function sortTree(items: NavItem[]) {
+  items.sort((a, b) => {
+    const byWeight = (a.weight ?? 0) - (b.weight ?? 0);
+    if (byWeight !== 0) return byWeight;
+    return a.title.localeCompare(b.title);
+  });
+
+  for (const item of items) {
+    if (item.children && item.children.length > 0) {
+      sortTree(item.children);
+      const sectionPath = (item.href || "").replace(/\/$/, "");
+      item.expanded = currentPath === sectionPath || currentPath.startsWith(`${sectionPath}/`);
+    }
+  }
+}
+
+sortTree(rootItems);
 
 let menuId = 0;
 function nextId() { return `toggle-${++menuId}`; }
@@ -40,29 +149,14 @@ function nextId() { return `toggle-${++menuId}`; }
       <DarkToggle />
 
       <!-- Navigation tree -->
-      {navItems.length > 0 ? (
+      {rootItems.length > 0 ? (
         <ul>
-          {navItems.map((item) => (
-            <li>
-              {item.children && item.children.length > 0 ? (
-                <>
-                  <input type="checkbox" class="toggle" id={nextId()} />
-                  <label for={`toggle-${menuId}`}>
-                    <a href={item.href}>{item.title}</a>
-                    <img src="/icons/chevron.svg" class="book-icon" alt="" aria-hidden="true" />
-                  </label>
-                  <ul>
-                    {item.children.map((child) => (
-                      <li>
-                        <a href={child.href}>{child.title}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <a href={item.href}>{item.title}</a>
-              )}
-            </li>
+          {rootItems.map((item) => (
+            <BookMenuItem
+              item={{ ...item, toggleId: item.toggleId || nextId() }}
+              currentPath={currentPath}
+              nextId={nextId}
+            />
           ))}
         </ul>
       ) : (
@@ -81,11 +175,5 @@ function nextId() { return `toggle-${++menuId}`; }
 
   .book-brand a {
     font-size: 1.125rem;
-  }
-
-  .book-icon {
-    filter: var(--icon-filter);
-    height: 1em;
-    width: 1em;
   }
 </style>
