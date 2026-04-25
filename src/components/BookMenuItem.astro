@@ -6,10 +6,13 @@ interface Props {
   item: NavItem;
   currentPath: string;
   nextId: () => string;
+  currentDepth: number;
+  maxDepth: number;
 }
 
-const { item, currentPath, nextId } = Astro.props;
-const hasChildren = (item.children?.length ?? 0) > 0;
+const { item, currentPath, nextId, currentDepth, maxDepth } = Astro.props;
+const hasChildren =
+  currentDepth < maxDepth && (item.children?.length ?? 0) > 0;
 const toggleId = item.toggleId || nextId();
 
 function normalizePath(path: string) {
@@ -52,6 +55,8 @@ function isActive(href?: string) {
               item={{ ...child, toggleId: child.toggleId || nextId() }}
               currentPath={currentPath}
               nextId={nextId}
+              currentDepth={currentDepth + 1}
+              maxDepth={maxDepth}
             />
           ))}
         </ul>

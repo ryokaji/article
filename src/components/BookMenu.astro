@@ -38,6 +38,8 @@ const docs = (await getCollection("docs"))
     return a.data.title.localeCompare(b.data.title);
   });
 
+const menuMaxDepth = Math.max(1, Math.floor(siteConfig.menuMaxDepth ?? 3));
+
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const docsById = new Map(docs.map((entry) => [entry.id, entry]));
 const sectionRootIds = new Set<string>();
@@ -171,6 +173,8 @@ function nextId() {
                 item={{ ...item, toggleId: item.toggleId || nextId() }}
                 currentPath={currentPath}
                 nextId={nextId}
+                currentDepth={1}
+                maxDepth={menuMaxDepth}
               />
             ))}
           </ul>
