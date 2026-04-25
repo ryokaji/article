@@ -7,6 +7,7 @@ import { getCollection } from "astro:content";
 import DarkToggle from "./DarkToggle.astro";
 import BookMenuItem from "./BookMenuItem.astro";
 import styles from "../layouts/layout.module.css";
+import { siteConfig } from "../config";
 
 export interface NavItem {
   title: string;
@@ -24,7 +25,10 @@ interface Props {
   brandHref?: string;
 }
 
-const { brand = "Hugo Book", brandHref = "/" } = Astro.props;
+const {
+  brand = siteConfig.brand,
+  brandHref = siteConfig.brandHref,
+} = Astro.props;
 
 const docs = (await getCollection("docs"))
   .filter((entry) => entry.data.bookHidden !== true)
