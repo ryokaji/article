@@ -186,27 +186,27 @@
 }
 
 /* ---- Menu toggle (mobile) ---- */
-#menu-control:checked ~ main .bookMenu {
+:global(#menu-control:checked) ~ main .bookMenu {
   visibility: initial;
 }
 
-#menu-control:checked ~ main .bookMenuContent {
+:global(#menu-control:checked) ~ main .bookMenuContent {
   transform: translateX(var(--menu-width));
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 }
 
-#menu-control:checked ~ main .bookPage {
+:global(#menu-control:checked) ~ main .bookPage {
   opacity: 0.25;
 }
 
-#menu-control:checked ~ main .bookMenuOverlay {
+:global(#menu-control:checked) ~ main .bookMenuOverlay {
   display: block;
   position: fixed;
   inset: 0;
 }
 
 /* ---- ToC toggle (mobile) ---- */
-#toc-control:checked ~ main .bookHeader aside {
+:global(#toc-control:checked) ~ main :global(#mobile-toc) {
   display: block;
 }
 

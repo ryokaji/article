@@ -45,9 +45,9 @@ const { title, hasToc = false, toc = [] } = Astro.props;
   {title && <h3>{title}</h3>}
 
   <!-- ToC toggle (only when page has ToC) -->
-  <label for="toc-control" aria-label="Toggle table of contents">
-    {
-      hasToc && (
+  {
+    hasToc && (
+      <label for="toc-control" aria-label="Toggle table of contents">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -65,9 +65,9 @@ const { title, hasToc = false, toc = [] } = Astro.props;
           <line x1="3" y1="12" x2="21" y2="12" />
           <line x1="3" y1="18" x2="18" y2="18" />
         </svg>
-      )
-    }
-  </label>
+      </label>
+    )
+  }
 </header>
 
 <!-- Mobile ToC (shown when #toc-control is checked) -->
