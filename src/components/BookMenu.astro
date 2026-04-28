@@ -44,6 +44,19 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const docsById = new Map(docs.map((entry) => [entry.id, entry]));
 const sectionRootIds = new Set<string>();
 
+function getDocHref(entryId: string, bookHref?: string) {
+  if (bookHref) return bookHref;
+
+  const segments = entryId.split("/").filter(Boolean);
+  const lastSegment = segments.at(-1);
+
+  if (lastSegment === "index" || lastSegment === "_index") {
+    segments.pop();
+  }
+
+  return `/${segments.join("/")}` || "/";
+}
+
 for (const entry of docs) {
   const segments = entry.id.split("/").filter(Boolean);
   for (let i = 1; i < segments.length; i++) {
@@ -76,9 +89,9 @@ for (const entry of docs) {
 
       section = {
         title: sectionDoc?.data.title || segment.replace(/[-_]/g, " "),
-        href:
-          sectionDoc?.data.bookHref ||
-          (sectionDoc ? `/docs/${sectionDoc.id}` : undefined),
+        href: sectionDoc
+          ? getDocHref(sectionDoc.id, sectionDoc.data.bookHref)
+          : undefined,
         isExternal: Boolean(sectionDoc?.data.bookHref),
         children: [],
         weight: sectionDoc?.data.weight,
@@ -102,7 +115,7 @@ for (const entry of docs) {
     const section = sectionByPath.get(sectionPath);
     if (section) {
       section.title = entry.data.title;
-      section.href = entry.data.bookHref || `/docs/${entry.id}`;
+      section.href = getDocHref(entry.id, entry.data.bookHref);
       section.isExternal = Boolean(entry.data.bookHref);
       section.weight = entry.data.weight ?? section.weight;
       section.isFlatSection =
@@ -117,7 +130,7 @@ for (const entry of docs) {
     continue;
   }
 
-  const href = entry.data.bookHref || `/docs/${entry.id}`;
+  const href = getDocHref(entry.id, entry.data.bookHref);
   siblings.push({
     title: entry.data.title,
     href,
