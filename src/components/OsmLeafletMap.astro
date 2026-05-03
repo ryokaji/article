@@ -1,0 +1,151 @@
+---
+/**
+ * OsmLeafletMap - Leaflet-enhanced map built on top of OSM iframe fallback.
+ */
+import OsmBase from "./OsmBase.astro";
+
+interface MapLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  embedUrl: string;
+  title?: string;
+  height?: number | string;
+  caption?: string;
+  links?: MapLink[];
+  figureClass?: string;
+  mapPayload: Record<string, unknown>;
+}
+
+const {
+  embedUrl,
+  title = "Map",
+  height = 360,
+  caption,
+  links = [],
+  figureClass,
+  mapPayload,
+} = Astro.props as Props;
+
+const mergedPayload = {
+  interactive: false,
+  ...mapPayload,
+};
+---
+
+<OsmBase
+  embedUrl={embedUrl}
+  title={title}
+  height={height}
+  caption={caption}
+  links={links}
+  figureClass={["book-osm-leaflet-map", figureClass].filter(Boolean).join(" ")}
+>
+  <Fragment slot="overlay">
+    <div class="leaflet-host" role="img" aria-label={title} hidden></div>
+    <script type="application/json" data-map-config set:html={JSON.stringify(mergedPayload)}></script>
+  </Fragment>
+</OsmBase>
+
+<script>
+  import { ensureLeaflet } from "../lib/leaflet-loader";
+
+    (async () => {
+      const drawGeoJson = (L: any, map: any, config: any) => {
+        if (config.geojson) {
+          const layer = L.geoJSON(config.geojson, {
+            style: {
+              color: config.color || "#1f6db2",
+              weight: Number(config.weight) || 2,
+              opacity: config.opacity ?? 0.95,
+              fillColor: config.fillColor || config.color || "#1f6db2",
+              fillOpacity: config.fillOpacity ?? 0.2,
+            },
+          }).addTo(map);
+
+          const layerBounds = layer.getBounds();
+          if (layerBounds && layerBounds.isValid()) {
+            map.fitBounds(layerBounds, { padding: [20, 20] });
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      const initFigure = async (figure: HTMLElement) => {
+        if (!figure || figure.dataset.mapInitialized === "1") return;
+
+        const host = figure.querySelector<HTMLElement>(".leaflet-host");
+        const fallbackFrame = figure.querySelector<HTMLElement>(".map-fallback");
+        const configScript = figure.querySelector("script[data-map-config]");
+        if (!host || !configScript || !configScript.textContent) return;
+
+        const config = JSON.parse(configScript.textContent);
+
+        const renderFallback = () => {
+          host.hidden = true;
+          if (fallbackFrame) {
+            fallbackFrame.hidden = false;
+          }
+          figure.dataset.mapInitialized = "1";
+        };
+
+        try {
+          const L = await ensureLeaflet();
+          if (!L) {
+            renderFallback();
+            return;
+          }
+
+          host.hidden = false;
+
+          const map = L.map(host, {
+            zoomControl: true,
+            dragging: !!config.interactive,
+            scrollWheelZoom: !!config.interactive,
+            doubleClickZoom: !!config.interactive,
+            boxZoom: !!config.interactive,
+            keyboard: !!config.interactive,
+            touchZoom: !!config.interactive,
+          });
+
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(map);
+
+          const rendered = drawGeoJson(L, map, config);
+
+          if (!rendered) {
+            renderFallback();
+            return;
+          }
+
+          if (fallbackFrame) {
+            fallbackFrame.hidden = true;
+          }
+          figure.dataset.mapInitialized = "1";
+        } catch {
+          renderFallback();
+        }
+      };
+
+      const figures = document.querySelectorAll<HTMLElement>(".book-osm-leaflet-map");
+      for (const figure of figures) {
+        await initFigure(figure);
+      }
+    })();
+</script>
+
+<style>
+  .leaflet-host {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+  }
+</style>
