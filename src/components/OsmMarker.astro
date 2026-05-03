@@ -1,0 +1,51 @@
+---
+/**
+ * OsmMarker - Render a single marker map embed from latitude/longitude.
+ */
+import OsmBase from "./OsmBase.astro";
+import {
+  boundsFromCenterZoom,
+  boundsToBbox,
+  clampNumber,
+  parseCoordinate,
+} from "../lib/map-geometry";
+
+interface Props {
+  lat: number | string;
+  lng: number | string;
+  zoom?: number;
+  height?: number | string;
+  title?: string;
+  label?: string;
+}
+
+const {
+  lat,
+  lng,
+  zoom = 14,
+  height = 320,
+  title = "Map",
+  label,
+} = Astro.props;
+
+const latitude = parseCoordinate(lat, "lat", -90, 90, "OsmMarker");
+const longitude = parseCoordinate(lng, "lng", -180, 180, "OsmMarker");
+const safeZoom = clampNumber(Math.round(Number(zoom) || 14), 1, 19);
+const safeHeight = Math.max(200, Math.round(Number(height) || 320));
+
+const bounds = boundsFromCenterZoom(latitude, longitude, safeZoom, 0.0025);
+const bbox = boundsToBbox(bounds);
+const marker = `${latitude},${longitude}`;
+const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${encodeURIComponent(marker)}`;
+const openStreetMapUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=${safeZoom}/${latitude}/${longitude}`;
+const caption = label ?? `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+---
+
+<OsmBase
+  embedUrl={embedUrl}
+  title={title}
+  height={safeHeight}
+  caption={caption}
+  links={[{ href: openStreetMapUrl, label: "Open in OpenStreetMap" }]}
+  figureClass="book-map-marker"
+/>

@@ -1,0 +1,96 @@
+---
+/**
+ * OsmAreaMap - Resolve municipality boundary from name and render it on OSM.
+ */
+import OsmLeafletMap from "./OsmLeafletMap.astro";
+import {
+  boundsToBbox,
+  clampNumber,
+  expandBounds,
+  parseCoordinate,
+} from "../lib/map-geometry";
+import { searchNominatim } from "../lib/nominatim";
+
+interface Props {
+  municipality: string;
+  prefecture?: string;
+  countryCode?: string;
+  height?: number | string;
+  title?: string;
+  label?: string;
+  color?: string;
+  weight?: number;
+  language?: string;
+  interactive?: boolean;
+}
+
+const {
+  municipality,
+  prefecture,
+  countryCode = "jp",
+  height = 360,
+  title = "Municipality Map",
+  label,
+  color = "#1f6db2",
+  weight = 2,
+  language = "ja",
+  interactive = false,
+} = Astro.props as Props;
+
+const safeHeight = Math.max(220, Math.round(Number(height) || 360));
+const safeWeight = clampNumber(Math.round(Number(weight) || 2), 1, 16);
+const query = prefecture ? `${municipality}, ${prefecture}` : municipality;
+
+const { result, requestUrl: nominatimUrl } = await searchNominatim({
+  query,
+  countryCode,
+  language,
+});
+
+if (!result.geojson) {
+  throw new Error(`OsmAreaMap: GeoJSON not returned for "${query}".`);
+}
+
+const centerLat = parseCoordinate(result.lat, "lat", -90, 90, "OsmAreaMap");
+const centerLng = parseCoordinate(result.lon, "lon", -180, 180, "OsmAreaMap");
+
+const south = parseCoordinate(result.boundingbox[0], "south", -90, 90, "OsmAreaMap");
+const north = parseCoordinate(result.boundingbox[1], "north", -90, 90, "OsmAreaMap");
+const west = parseCoordinate(result.boundingbox[2], "west", -180, 180, "OsmAreaMap");
+const east = parseCoordinate(result.boundingbox[3], "east", -180, 180, "OsmAreaMap");
+
+const paddedBounds = expandBounds(
+  { south, north, west, east },
+  0.3,
+  0.0025,
+);
+
+const bbox = boundsToBbox(paddedBounds);
+const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik`;
+const openStreetMapUrl =
+  result.osm_type === "relation" && result.osm_id
+    ? `https://www.openstreetmap.org/relation/${result.osm_id}`
+    : `https://www.openstreetmap.org/?mlat=${centerLat}&mlon=${centerLng}#map=13/${centerLat}/${centerLng}`;
+const caption = label ?? result.display_name;
+const mapPayload = {
+  geojson: result.geojson,
+  color,
+  weight: safeWeight,
+  fillColor: color,
+  fillOpacity: 0.2,
+  interactive,
+};
+---
+
+<OsmLeafletMap
+  embedUrl={embedUrl}
+  title={title}
+  height={safeHeight}
+  caption={caption}
+  links={[
+    { href: openStreetMapUrl, label: "Open in OpenStreetMap" },
+    { href: nominatimUrl, label: "Nominatim params" },
+  ]}
+  mapPayload={mapPayload}
+  figureClass="book-osm-area-map"
+/>
